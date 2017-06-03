@@ -1,0 +1,25 @@
+/* fade动画 */
+.fade-leave-active, .fade-enter-active {
+	transition: all .4s cubic-bezier(.55, 0, .1, 1);
+}
+.fade-enter, .fade-leave-active {
+	opacity: 0;
+}
+/* slide动画 */
+.slide-leave-active, .slide-enter-active {
+	transition: all .8s cubic-bezier(.55, 0, .1, 1);
+}
+.slide-enter, .slide-leave-active {
+	transform: translateX(80px);
+	opacity: 0;
+}
+/*fancy动画*/
+.fancy-leave-active, .fancy-enter-active {
+	transform: scale(1);
+	opacity: 1;
+	transition: all .8s cubic-bezier(.55, 0, .1, 1);
+}
+.fancy-enter, .fancy-leave-active {
+	transform: scale(0);
+	opacity: 0;
+}
