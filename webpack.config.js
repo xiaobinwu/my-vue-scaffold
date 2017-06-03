@@ -31,6 +31,10 @@ module.exports = (options = {}) => {
       chunkFilename: '[id].js?[chunkhash]'
     },
 
+    externals: {
+
+    },
+
     module: {
       rules: [
         {
@@ -38,7 +42,23 @@ module.exports = (options = {}) => {
           exclude: /node_modules/,
           use: ['babel-loader', 'eslint-loader']
         },
-
+        {
+          test: /\.vue$/,
+          loader: 'vue-loader',
+          options: {
+              postcss: [
+                  require('autoprefixer')({
+                      browsers: ['last 3 versions']
+                  })
+              ],
+              loaders: {
+                sass: ExtractTextPlugin.extract({
+                  use: 'css-loader!sass-loader',
+                  fallback: 'vue-style-loader'
+                })
+              }
+          }
+        },
         {
           test: /\.html$/,
           use: [
