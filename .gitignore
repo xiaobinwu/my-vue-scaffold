@@ -5,5 +5,5 @@
 .idea
 .vscode
 config/*
-!config/default.js
+!config/prod.js
 !config/dev.js
