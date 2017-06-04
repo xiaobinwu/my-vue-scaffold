@@ -9,8 +9,8 @@ Vue.use(Vuex)
 
 //公用store
 const state = {
-	count: 0,
-	amount: 0
+	count: 1,
+	amount: 5
 };
 
 const mutations = {

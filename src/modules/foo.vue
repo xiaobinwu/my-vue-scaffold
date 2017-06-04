@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import '~/public/scss/_reset'
+import '~/public/scss/_transition'
 import Header from '~/components/header'
 import Footer from '~/components/footer'
 export default {
@@ -24,13 +26,12 @@ export default {
     },
     watch: {
         '$route' (to, from) {
-            document.title = '测试';
+            document.title = '测试111';
         }
     }
 }
 </script>
 <style lang="sass">
-@import "../../public/scss/_transition.scss";
 .main{
     display: flex;
     flex-direction: column;

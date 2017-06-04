@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server -d --hot --env.dev",
-    "build": "rimraf dist && webpack -p --env.config production"
+    "dev": "webpack-dev-server -d --hot --inline --env.dev",
+    "build": "rimraf dist && webpack -p --env.config prod"
   },
   "author": "xiaobin_wu",
   "license": "ISC",
@@ -36,6 +36,7 @@
     "url-loader": "^0.5.8",
     "vue-loader": "^12.2.1",
     "vue-style-loader": "^3.0.1",
+    "vue-template-compiler": "^2.3.3",
     "webpack": "^2.6.1",
     "webpack-dev-server": "^2.4.5"
   },

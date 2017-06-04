@@ -8,14 +8,14 @@ const mutations = {
 };
 
 const actions = {
-    changeStatus({commit}){
+    changeStatus({commit}, flag){
         commit('CHANGE_STATUS', flag)
     }
 }
 
 const getters = {
     statusStr(state){
-        return '当前切换标志位为' + state.flag;
+        return '我是getters获取的内容，当前切换标志位为' + state.flag;
     }
 }
 

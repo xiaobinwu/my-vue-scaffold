@@ -4,7 +4,7 @@ div.foo-container
     div.foo-content
         p(v-text="'这是来自公用store的state（count）：' + count")
         p(v-text="'这是来自公用store的state（amount）：' + amount")
-        button(@click="increment") 递增count的值
+        button(@click="increment") 递增count的值(延迟1秒)
 </template>
 <script>
     import Vue from 'vue'
@@ -17,7 +17,7 @@ div.foo-container
         	}
         },
         created(){
-        	this.init();
+
         },
         mounted(){
             console.log(this.count)
@@ -26,7 +26,7 @@ div.foo-container
         computed: {
             ...mapState({
                 count: state => state.count,
-                amount: amount => state.amount
+                amount: state => state.amount
             })
         },
         filters:{
@@ -49,5 +49,11 @@ div.foo-container
 		width: $container-width;
         margin: auto;
         border: 1px #eee solid;
+        button{
+            font-size: 14px;
+        }
+    }
+    a{
+        text-decoration: none;
     }
 </style>
