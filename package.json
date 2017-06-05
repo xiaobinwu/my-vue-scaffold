@@ -4,7 +4,7 @@
   "description": "this is a vue scaffold",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "local": "npm run dev --config=local",
     "dev": "webpack-dev-server -d --hot --inline --env.dev",
     "build": "rimraf dist && webpack -p --env.config prod"
   },

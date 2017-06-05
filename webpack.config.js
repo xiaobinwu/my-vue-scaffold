@@ -23,7 +23,7 @@ module.exports = (options = {}) => {
 
   const webpackObj = {
     entry: Object.assign({
-      vendor: ['vue','vuex', 'vue-router']    
+      vendor: ['vue','vuex','vue-router']
     }, entryJsList),
 
     output: {
@@ -49,7 +49,7 @@ module.exports = (options = {}) => {
           loader: 'vue-loader',
           options: {
               loaders: {
-                sass: ExtractTextPlugin.extract({
+                sass: options.dev ? 'vue-style-loader!css-loader!sass-loader' : ExtractTextPlugin.extract({
                   use: 'css-loader!sass-loader',
                   fallback: 'vue-style-loader'
                 })
@@ -60,16 +60,16 @@ module.exports = (options = {}) => {
             //需要有相应的css-loader，因为第三方库可能会有文件
             //（如：element-ui） css在node_moudle
             test: /\.css$/,
-            loader: ExtractTextPlugin.extract({
+            loader: options.dev ? 'style-loader!css-loader' : ExtractTextPlugin.extract({
                 use: "css-loader",
-                fallback: 'style-loader' 
+                fallback: 'style-loader'
             })
         },
         {
             test: /\.(scss|sass)$/,
-            loader: ExtractTextPlugin.extract({
+            loader: options.dev ? 'style-loader!css-loader!sass-loader' : ExtractTextPlugin.extract({
                 use: "css-loader!sass-loader",
-                fallback: 'style-loader' 
+                fallback: 'style-loader'
             })
         },
         {
@@ -136,7 +136,6 @@ module.exports = (options = {}) => {
     },
 
     devServer: config.devServer ? {
-      host: '0.0.0.0',
       port: config.devServer.port,
       proxy: config.devServer.proxy,
       publicPath: config.publicPath,
@@ -150,10 +149,12 @@ module.exports = (options = {}) => {
   }
 
   if (!options.dev) {
-    webpackObj.devtool = false  
+    webpackObj.devtool = false
     webpackObj.plugins = (webpackObj.plugins || []).concat([
         new webpack.optimize.UglifyJsPlugin({
-            sourceMap: true
+            compress: {
+                warnings: false
+            }
         }),
         new webpack.LoaderOptionsPlugin({
             minimize: true

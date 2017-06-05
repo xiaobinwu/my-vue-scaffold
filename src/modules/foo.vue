@@ -26,7 +26,7 @@ export default {
     },
     watch: {
         '$route' (to, from) {
-            document.title = '测试111';
+            document.title = '测试';
         }
     }
 }

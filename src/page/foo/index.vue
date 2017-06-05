@@ -6,7 +6,7 @@ div.foo-container
         p(v-text="statusStr")
         button(@click="changeStatus(!flag)") 改变flag的值
     h3 链接跳转
-    router-link(to="detail") GO TO /deail
+    router-link(to="detail") GO TO DETAIL
 </template>
 <script>
     import Vue from 'vue'
@@ -52,5 +52,8 @@ div.foo-container
 		width: $container-width;
         margin: auto;
         border: 1px #eee solid;
+        h3{
+            margin-top: 10px;
+        }
     }
 </style>
