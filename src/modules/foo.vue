@@ -14,7 +14,7 @@ import Header from '~/components/header'
 import Footer from '~/components/footer'
 export default {
     name: 'foo',
-    data () {
+    data() {
         return {
         }
     },
@@ -22,11 +22,11 @@ export default {
         Header,
         Footer
     },
-    methods:{
+    methods: {
     },
     watch: {
-        '$route' (to, from) {
-            document.title = '测试';
+        '$route'(to, from) {
+            document.title = '测试'
         }
     }
 }

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "local": "npm run dev --config=local",
-    "dev": "webpack-dev-server -d --hot --inline --env.dev",
+    "dev": "webpack-dev-server -d --hot --inline --env.dev --env.config dev",
     "build": "rimraf dist && webpack -p --env.config prod"
   },
   "author": "xiaobin_wu",
@@ -21,6 +21,7 @@
     "eslint": "^3.19.0",
     "eslint-config-enough": "^0.2.6",
     "eslint-loader": "^1.7.1",
+    "eslint-plugin-html": "^2.0.3",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.11.1",
     "glob": "^7.1.2",
@@ -45,8 +46,19 @@
     "extends": "enough",
     "env": {
       "browser": true,
-      "node": true
-    }
+      "node": true,
+      "commonjs": true,
+      "es6": true
+    },
+    "rules": {
+      "linebreak-style": 0,
+      "indent": [2, 4],
+      "no-unused-vars": 0,
+      "no-console": 0
+    },
+    "plugins": [
+      "html"
+    ]
   },
   "babel": {
     "presets": [

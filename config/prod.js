@@ -1,3 +1,3 @@
 module.exports = {
-  publicPath: '/dist/'
+    publicPath: 'http://cdn.example.com/assets/'
 }

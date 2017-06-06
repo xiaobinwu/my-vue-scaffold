@@ -5,18 +5,18 @@
     import Vue from 'vue'
     export default{
         name: 'header',
-        data(){
-            return{
+        data() {
+            return {
 
             }
         },
-        mounted(){
+        mounted() {
 
         },
-        methods:{
+        methods: {
 
         },
-        watch:{
+        watch: {
 
         },
         components: {

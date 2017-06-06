@@ -10,10 +10,10 @@ const Detail = resolve => require(['~/page/foo/detail.vue'], resolve)
 
 
 const routes = [
-  { path: '/', component: Index, name: 'index' },
-  { path: '/detail', component: Detail, name: 'detail' }
+    { path: '/', component: Index, name: 'index' },
+    { path: '/detail', component: Detail, name: 'detail' }
 ]
 
 export default new VueRouter({
- 	routes
+    routes
 })

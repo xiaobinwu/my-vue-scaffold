@@ -3,20 +3,20 @@
 </template>
 <script>
     import Vue from 'vue'
-    export default{
+    export default {
         name: 'footer',
-        data(){
-        	return{
+        data() {
+            return {
 
-        	}
+            }
         },
-        mounted(){
-
-        },
-        methods:{
+        mounted() {
 
         },
-        watch:{
+        methods: {
+
+        },
+        watch: {
 
         },
         components: {

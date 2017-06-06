@@ -4,6 +4,3 @@
 *.log
 .idea
 .vscode
-config/*
-!config/prod.js
-!config/dev.js
