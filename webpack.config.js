@@ -7,7 +7,6 @@ const glob = require('glob')
 module.exports = (options = {}) => {
     // 配置文件，根据 run script不同的config参数来调用不同config
     const config = require('./config/' + (process.env.npm_config_config || options.config || 'dev'))
-    console.log(config)
     // 遍历入口文件，这里入口文件与模板文件名字保持一致，保证能同时合成HtmlWebpackPlugin数组和入口文件数组
     const entries = glob.sync('./src/modules/*.js')
     const entryJsList = {}
@@ -22,15 +21,19 @@ module.exports = (options = {}) => {
         }))
     }
     // 处理开发环境和生产环境ExtractTextPlugin的使用情况
-    function cssLoaders(loader) {
+    function cssLoaders(loader, opt) {
+        const loaders = loader.split('!')
+        const opts = opt || {}
         if (options.dev) {
-            return loader
+            if (opts.extract) {
+                return loader
+            } else {
+                return loaders
+            }
         } else {
-            const loaders = loader.split('!')
             const fallbackLoader = loaders.shift()
-            const loadersStr = loaders.join('!')
             return ExtractTextPlugin.extract({
-                use: loadersStr,
+                use: loaders,
                 fallback: fallbackLoader
             })
         }
@@ -77,7 +80,7 @@ module.exports = (options = {}) => {
                     loader: 'vue-loader',
                     options: {
                         loaders: {
-                            sass: cssLoaders('vue-style-loader!css-loader!sass-loader')
+                            sass: cssLoaders('vue-style-loader!css-loader!sass-loader', { extract: true })
                         }
                     }
                 },
@@ -86,11 +89,11 @@ module.exports = (options = {}) => {
                     // （如：element-ui） css在node_moudle
                     // 生产环境才需要code抽离，不然的话，会使热重载失效
                     test: /\.css$/,
-                    loader: cssLoaders('style-loader!css-loader')
+                    use: cssLoaders('style-loader!css-loader')
                 },
                 {
                     test: /\.(scss|sass)$/,
-                    loader: cssLoaders('style-loader!css-loader!sass-loader')
+                    use: cssLoaders('style-loader!css-loader!sass-loader')
                 },
                 {
                     test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
