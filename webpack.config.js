@@ -43,7 +43,7 @@ module.exports = (options = {}) => {
         entry: Object.assign({
             vendor: ['vue', 'vuex', 'vue-router']
         }, entryJsList),
-
+        // 文件内容生成哈希值chunkhash，使用hash会更新所有文件
         output: {
             path: resolve(__dirname, 'dist'),
             filename: options.dev ? 'static/js/[name].js' : 'static/js/[name].[chunkhash].js',
@@ -99,22 +99,10 @@ module.exports = (options = {}) => {
                     test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
                     use: [
                         {
-                            loader: 'file-loader',
-                            options: {
-                                name: 'static/img/[name].[ext]?[hash]'
-                            }
-                        }
-                    ]
-                },
-
-                {
-                    test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
-                    exclude: /favicon\.png$/,
-                    use: [
-                        {
                             loader: 'url-loader',
                             options: {
-                                limit: 10000
+                                limit: 10000,
+                                name: 'static/imgs/[name].[ext]?[hash]'
                             }
                         }
                     ]
@@ -134,9 +122,10 @@ module.exports = (options = {}) => {
                 names: ['vendor', 'manifest']
             }),
             // 定义全局常量
+            // cli命令行使用process.env.NODE_ENV不如期望效果，使用不了，所以需要使用DefinePlugin插件定义，定义形式'"development"'或JSON.stringify('development')
             new webpack.DefinePlugin({
                 'process.env': {
-                    NODE_ENV: options.dev ? '"development"' : '"production"'
+                    NODE_ENV: options.dev ? JSON.stringify('development') : JSON.stringify('production')
                 }
             })
 

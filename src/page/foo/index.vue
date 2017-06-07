@@ -5,6 +5,12 @@
             p(v-text="'我是私有store(foo)的state(flag)：' + flag")
             p(v-text="statusStr")
             button(@click="changeStatus(!flag)") 改变flag的值
+        h3 我是背景图
+        div.bg-img
+        h3 我是图片（非base64）
+        img(src="../../public/imgs/user.jpg")
+        h3 我是图片（base64）
+        img(src="../../public/imgs/user.png")
         h3 链接跳转
         router-link(to="detail") GO TO DETAIL
 </template>
@@ -54,6 +60,11 @@
         border: 1px #eee solid;
         h3{
             margin-top: 10px;
+        }
+        .bg-img{
+            width: 449px;
+            height: 323px;
+            background: url(../../public/imgs/user.jpg) no-repeat;
         }
     }
 </style>
