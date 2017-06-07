@@ -178,10 +178,12 @@ module.exports = (options = {}) => {
         webpackObj.plugins = (webpackObj.plugins || []).concat([
             // 压缩js
             new webpack.optimize.UglifyJsPlugin({
+                // webpack2，默认为true，可以不用设置
                 compress: {
                     warnings: false
                 }
             }),
+            //  压缩 loaders
             new webpack.LoaderOptionsPlugin({
                 minimize: true
             })

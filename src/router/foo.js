@@ -4,9 +4,9 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-
-const Index = resolve => require(['~/page/foo/index.vue'], resolve)
-const Detail = resolve => require(['~/page/foo/detail.vue'], resolve)
+// System.import()来做懒加载，没有使用用require
+const Index = resolve => System.import('~/page/foo/index.vue')
+const Detail = resolve => System.import('~/page/foo/detail.vue')
 
 
 const routes = [

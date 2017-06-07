@@ -15,7 +15,7 @@
         name: 'fooIndex',
         data() {
             return {
-                content: '我是Foo的首页'
+                content: '我是Foo的首页dasad'
             }
         },
         created() {
