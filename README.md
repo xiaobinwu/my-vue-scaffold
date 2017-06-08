@@ -1,5 +1,7 @@
 # 简单vue项目脚手架
 
+## [github地址](https://github.com/xiaobinwu/my-vue-scaffold)
+
 ## 使用技术栈
 > * webpack(^2.6.1)
 > * webpack-dev-server(^2.4.5)
@@ -231,7 +233,7 @@ module.exports = (options = {}) => {
 ```javascript
     "local": "npm run dev --config=local",
     "dev": "webpack-dev-server -d --hot --inline --env.dev --env.config dev",
-    "build": "rimraf dist && webpack -p --env.config prod"
+    "build": "rimraf dist && webpack -p --env.config prod" //rimraf清空dist目录
 ```
 对于`local`命令，我们执行的是`dev`命令，但是在最后面会`--config=local`，这是配置，这样我们可以通过`process.env.npm_config_config`获取到，而对于`dev`命令，对于`--env XXX`，我们便可以在function获取`option.config`= 'dev' 和 `option.dev`= true的值，特别方便！以此便可以同步参数来加载不同的配置文件了。对于`-d`、`-p`不清楚的话，可以[这里](https://doc.webpack-china.org/api/cli/)查看,很详细！
 ```javascript
@@ -254,7 +256,7 @@ module.exports = (options = {}) => {
         }))
     }
 ```
-对于HtmlWebpackPlugin插件中几个配置项的意思是，template：模板路径，filename：文件名称，这里为了区分开来模板文件我是放置在dist/modules文件夹中，而对应的编译打包好的js、img、css我也是会放在dist/下对应目录的，这样目录会比较清晰。chunks：指定插入文件中的chunk,后面我们会生成manifest文件、公共vendor、以及对应生成的js\css（名称一样）
+对于HtmlWebpackPlugin插件中几个配置项的意思是，template：模板路径，filename：文件名称，这里为了区分开来模板文件我是放置在dist/modules文件夹中，而对应的编译打包好的js、img（对于图片我们是使用file-loader、url-loader进行抽离，对于这两个不是很理解的，可以看[这里](https://vue-loader.vuejs.org/zh-cn/configurations/asset-url.html)）、css我也是会放在dist/下对应目录的，这样目录会比较清晰。chunks：指定插入文件中的chunk,后面我们会生成manifest文件、公共vendor、以及对应生成的js\css（名称一样）
 
 ### 3. 处理开发环境和生产环境ExtractTextPlugin的使用情况
 开发环境，不需要把css进行抽离，要以style插入html文件中，可以很好实现热替换  
@@ -280,7 +282,7 @@ module.exports = (options = {}) => {
     }
     ...
     // 使用情况
-    // 注意：需要安装vue-template-compiler，不然编译报错
+    // 注意：需要安装vue-template-compiler，不然编译会报错
     {
         test: /\.vue$/,
         loader: 'vue-loader',
@@ -306,3 +308,82 @@ cli命令行（`webpack -p`）使用process.env.NODE_ENV不如期望效果，使
         }
     })
 ```
+### 5. 使用eslint修正代码规范
+通过eslint来检查代码的规范性，通过定义一套配置项，来规范代码，这样多人协作，写出来的代码也会比较优雅，不好的地方是，就是配置项太多，有些默认项设置我们不需要，但是确是处处限制我们，需要通过配置屏蔽掉，可以通过`.eslintrc `文件或是package.json的`eslintConfig`，还有其他方式，可以到[中文网](http://eslint.cn/)看，这里我用的是package.json方式，如下：
+```javascript
+    ...
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "extends": "enough",
+    "env": {
+      "browser": true,
+      "node": true,
+      "commonjs": true,
+      "es6": true
+    },
+    "rules": {
+      "linebreak-style": 0,
+      "indent": [2, 4],
+      "no-unused-vars": 0,
+      "no-console": 0
+    },
+    "plugins": [
+      "html"
+    ]
+  },
+  ...
+```
+我们还需要安装 `npm install eslint eslint-config-enough eslint-loader --save-dev`，eslint-config-enough是所谓的配置文件，这样package.json的内容才能起效，但是不当当是这样，对应编辑器也需要安装对应的插件，sublime text 3需要安装SublimeLinter、SublimeLinter-contrib-eslint插件。对于所有规则的详解，可以去看[官网](http://eslint.cn/docs/user-guide/configuring)，也可以去[这里]( http://blog.guowenfh.com/2016/08/07/ESLint-Rules/)看，很详细！
+由于我们使用的是vue-loader，自然我们是希望能对.vue文件eslint，那么需要安装eslint-plugin-html，在package.json中进行配置。然后对应webpack配置：
+```javascript
+    {
+        enforce: 'pre',
+        test: /.vue$/,
+        loader: 'eslint-loader',
+        exclude: /node_modules/
+    }
+```
+我们会发现webpack v1和v2之间会有一些不同，比如webpack1对于预先加载器处理的执行是这样的，
+```javascript
+  module: {
+    preLoaders: [
+      {
+        test: /\.js$/,
+        loader: "eslint-loader"
+      }
+    ]
+  }
+```
+更多的不同可以到[中文网](https://doc.webpack-china.org/guides/migrating/)看,很详细，不做拓展。
+### 6. alias vue指向问题
+```javascript
+    ...
+    alias: {
+        vue: 'vue/dist/vue'
+    },
+    ...
+```
+Vue 最早会打包生成三个文件，一个是 runtime only 的文件 vue.common.js，一个是 compiler only 的文件 compiler.js，一个是 runtime + compiler 的文件 vue.js。
+vue.js = vue.common.js + compiler.js，默认package.json的main是指向vue.common.js，而template 属性的使用一定要用compiler.js，因此需要在alias改变vue指向
+
+### 7. devServer的使用
+之前的[项目](https://github.com/xiaobinwu/Wuji)中使用的是用express启动http服务，webpack-dev-middleware＋webpack-hot-middleware，这里会用到compiler＋compilation，这个是webpack的编译器和编译过程的一些知识，也不是很懂，后续要去做做功课，应该可以加深对webpack运行机制的理解。这样做的话，感觉复杂很多，对于webpack2.0 devServer似乎功能更强大更加完善了，所以直接使用就可以了。如下：
+```javascript
+    devServer: {
+        port: 8080, //端口号
+        proxy: { //方向代理 /api/auth/ ＝> http://api.example.dev
+            '/api/auth/': {
+                target: 'http://api.example.dev',
+                changeOrigin: true,
+                pathRewrite: { '^/api': '' }
+            }
+        },
+        publicPath: config.publicPath,
+        stats: { colors: true }
+    }
+    //changeOrigin会修改HTTP请求头中的Host为target的域名， 这里会被改为api.example.dev
+    //pathRewrite用来改写URL， 这里我们把/api前缀去掉，直接使用/auth/请求
+```
+[webpack 2 打包实战](https://github.com/fenivana/webpack-in-action)讲解得非常好，非常棒。可以去看一下，一定会有所收获！
+### 8. 热重载原理
+[webpack中文网](https://doc.webpack-china.org/concepts/hot-module-replacement/),讲的还算清楚，不过可能太笨，看起来还是云里雾里的，似懂非懂的，补补课，好好看看。

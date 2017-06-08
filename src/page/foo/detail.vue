@@ -48,7 +48,7 @@
     .#{$prefix}-container{
 		width: $container-width;
         margin: auto;
-        border: 1px #eee solid;
+        border: 1px #000 solid;
         button{
             font-size: 14px;
         }
