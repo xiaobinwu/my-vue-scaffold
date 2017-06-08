@@ -16,7 +16,7 @@
 [vue-loader](https://vue-loader.vuejs.org/zh-cn/)  
 [webpack2](https://doc.webpack-china.org/)  
 [eslint](http://eslint.cn/docs/user-guide/configuring)  
-内容相当多，尤其是webpack2教程，官方脚手架[vue-cli](https://github.com/vuejs/vue-cli)虽然相当完整齐全，但是修改起来还是挺花时间，于是自己参照网上的资料和之前做过的[项目](https://github.com/xiaobinwu/Wuji)用到的构建工具地去写了一个简单vue项目脚手架。适用于多页面spa模式的业务场景（每个模块都是一个spa）。比较简单,主要就是一个webpack.config.js文件，没有说特意地去划分成分webpack.dev.config.js、webpack.prov.config.js等等。下面是整个webpack.config.js文件：
+内容相当多，尤其是webpack2教程，官方脚手架[vue-cli](https://github.com/vuejs/vue-cli)虽然相当完整齐全，但是修改起来还是挺花时间，于是自己参照网上的资料和之前做过的[项目](https://github.com/xiaobinwu/Wuji)用到的构建工具地去写了一个简单vue项目脚手架。适用于多页面spa模式的业务场景（每个模块都是一个spa）。比较简单,主要就是一个webpack.config.js文件，没有说特意地去划分成分webpack.dev.config.js、webpack.prov.config.js等等。下面是整个webpack.config.js文件代码：
 ```javascript
 const { resolve } = require('path')
 const webpack = require('webpack')
@@ -201,4 +201,108 @@ module.exports = (options = {}) => {
 
     return webpackObj
 }
+```
+## 上面的代码对于每个配置项都有注释说明，这里有几点需要注意的：
+
+### 1. webpack.config.js导出的是一个function
+之前[项目](https://github.com/xiaobinwu/Wuji)的webpack.config.js是以对象形式export的，如下
+```javascript
+module.exports = {
+    entry: ...,
+    output: {
+        ...
+    },
+    ...
+}
+```
+而现在倒出来的是一个function，如下：
+```javascript
+module.exports = (options = {}) => { 
+    return {
+        entry: ...,
+        output: {
+            ...
+        },
+        ...
+    }
+}
+```
+这样的话，function会在执行webpack CLI的时候获取webpack的参数，通过options传进function，看一下package.json：
+```javascript
+    "local": "npm run dev --config=local",
+    "dev": "webpack-dev-server -d --hot --inline --env.dev --env.config dev",
+    "build": "rimraf dist && webpack -p --env.config prod"
+```
+对于`local`命令，我们执行的是`dev`命令，但是在最后面会`--config=local`，这是配置，这样我们可以通过`process.env.npm_config_config`获取到，而对于`dev`命令，对于`--env XXX`，我们便可以在function获取`option.config`= 'dev' 和 `option.dev`= true的值，特别方便！以此便可以同步参数来加载不同的配置文件了。对于`-d`、`-p`不清楚的话，可以[这里](https://doc.webpack-china.org/api/cli/)查看,很详细！
+```javascript
+    // 配置文件，根据 run script不同的config参数来调用不同config
+    const config = require('./config/' + (process.env.npm_config_config || options.config || 'dev'))
+```
+### 2. modules放置模板文件、入口文件、对应模块的vue文件
+将入口文件和模板文件放到modules目录（名字保持一致），webpack文件会通过glob读取modules目录，遍历生成入口文件对象和模板文件数组，如下：
+```javascript
+    const entries = glob.sync('./src/modules/*.js')
+    const entryJsList = {}
+    const entryHtmlList = []
+    for (const path of entries) {
+        const chunkName = path.slice('./src/modules/'.length, -'.js'.length)
+        entryJsList[chunkName] = path
+        entryHtmlList.push(new HtmlWebpackPlugin({
+            template: path.replace('.js', '.html'),
+            filename: 'modules/' + chunkName + '.html',
+            chunks: ['manifest', 'vendor', chunkName]
+        }))
+    }
+```
+对于HtmlWebpackPlugin插件中几个配置项的意思是，template：模板路径，filename：文件名称，这里为了区分开来模板文件我是放置在dist/modules文件夹中，而对应的编译打包好的js、img、css我也是会放在dist/下对应目录的，这样目录会比较清晰。chunks：指定插入文件中的chunk,后面我们会生成manifest文件、公共vendor、以及对应生成的js\css（名称一样）
+
+### 3. 处理开发环境和生产环境ExtractTextPlugin的使用情况
+开发环境，不需要把css进行抽离，要以style插入html文件中，可以很好实现热替换  
+生产环境，需要把css进行抽离合并，如下（根据options.dev区分开发和生产）：
+```javascript
+    // 处理开发环境和生产环境ExtractTextPlugin的使用情况
+    function cssLoaders(loader, opt) {
+        const loaders = loader.split('!')
+        const opts = opt || {}
+        if (options.dev) {
+            if (opts.extract) {
+                return loader
+            } else {
+                return loaders
+            }
+        } else {
+            const fallbackLoader = loaders.shift()
+            return ExtractTextPlugin.extract({
+                use: loaders,
+                fallback: fallbackLoader
+            })
+        }
+    }
+    ...
+    // 使用情况
+    // 注意：需要安装vue-template-compiler，不然编译报错
+    {
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+            loaders: {
+                sass: cssLoaders('vue-style-loader!css-loader!sass-loader', { extract: true })
+            }
+        }
+    },
+    ...
+    {
+        test: /\.(scss|sass)$/,
+        use: cssLoaders('style-loader!css-loader!sass-loader')
+    }
+```
+再使用ExtractTextPlugin合并抽离到`static/css/`目录
+### 4. 定义全局常量
+cli命令行（`webpack -p`）使用process.env.NODE_ENV不如期望效果，使用不了，所以需要使用DefinePlugin插件定义，定义形式'"development"'或JSON.stringify(process.env.NODE_ENV)，我使用这样的写法'development'，结果报错（针对webpack2），查找了一下网上资料，[它](https://github.com/webpack/webpack/issues/2537)是这样讲的，可以去看一下，设置如下：
+```javascript
+    new webpack.DefinePlugin({
+        'process.env': {
+            NODE_ENV: options.dev ? JSON.stringify('development') : JSON.stringify('production')
+        }
+    })
 ```
