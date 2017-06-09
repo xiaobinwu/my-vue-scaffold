@@ -47,7 +47,7 @@ module.exports = (options = {}) => {
         output: {
             path: resolve(__dirname, 'dist'),
             filename: options.dev ? 'static/js/[name].js' : 'static/js/[name].[chunkhash].js',
-            chunkFilename: 'static/js/[id].[chunkhash].js',
+            chunkFilename: 'static/js/[id].[chunkhash].js', // 这样异步加载的chunk可以被提取出来，比如（src/router/foo.js）懒加载路由
             publicPath: config.publicPath
         },
 
@@ -118,6 +118,7 @@ module.exports = (options = {}) => {
                 allChunks: true
             }),
             // 抽离公共代码
+            // 使用manifest可以把待更新的chunk和chunkname从vendor中提取出来，这样保证vendor不会频繁更新（更新的话，chunkname会发生变化，就会重新加载）
             new webpack.optimize.CommonsChunkPlugin({
                 names: ['vendor', 'manifest']
             }),
