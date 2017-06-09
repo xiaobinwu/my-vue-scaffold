@@ -152,7 +152,8 @@ module.exports = (options = {}) => {
             port: config.devServer.port,
             proxy: config.devServer.proxy,
             publicPath: config.publicPath,
-            stats: { colors: true }
+            stats: { colors: true },
+            disableHostCheck: true
         } : undefined,
         // 屏蔽文件超过限制大小的warn
         performance: {

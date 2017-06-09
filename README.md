@@ -384,6 +384,15 @@ vue.js = vue.common.js + compiler.js，默认package.json的main是指向vue.com
     //changeOrigin会修改HTTP请求头中的Host为target的域名， 这里会被改为api.example.dev
     //pathRewrite用来改写URL， 这里我们把/api前缀去掉，直接使用/auth/请求
 ```
+还可以配置`host:0.0.0.0`,允许同一局域网不同电脑的访问。
 [webpack 2 打包实战](https://github.com/fenivana/webpack-in-action)讲解得非常好，非常棒。可以去看一下，一定会有所收获！
 ### 8. 热重载原理
 [webpack中文网](https://doc.webpack-china.org/concepts/hot-module-replacement/),讲的还算清楚，不过可能太笨，看起来还是云里雾里的，似懂非懂的，补补课，好好看看。
+### 9. localtunnel的使用
+Localtunnel 是一个可以让内网服务器暴露到公网上的开源项目，使用可以看[这里](https://scarletsky.github.io/2016/01/17/localtunnel-usage/)，
+```javascript
+$ npm install -g localtunnel
+$ lt --port 8080
+your url is: https://uhhzexcifv.localtunnel.me
+```
+这样的话，可以把我们的本地网站暂时性地暴露到公网，可以对网站做一些线上线下对比，详细内容可以去了解一下localtunnel，这里讲的是通过上面配置，访问`https://uhhzexcifv.localtunnel.me`，没有达到理想效果，出现了`Invalid Host header`的错误,因为devServer缺少一个配置`disableHostCheck: true`,这样的一个配置，很多文档上面都没有说明，字面上面的意思`不要去检查Host`，这样设置，便可以绕过这一层检验，设置的配置项在[optionsSchema.json](https://github.com/webpack/webpack-dev-server/blob/master/lib/optionsSchema.json)中，issue可以看[这里](https://github.com/webpack/webpack-dev-server/issues/883)

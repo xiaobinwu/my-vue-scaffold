@@ -1,7 +1,7 @@
 module.exports = {
     publicPath: '/dist/',
     devServer: {
-        port: 8100,
+        port: 3000,
         proxy: {
             // '/api/auth/': {
             //     target: 'http://api.example.dev',

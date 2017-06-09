@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "local": "npm run dev --config=local",
-    "dev": "webpack-dev-server -d --hot --inline --env.dev --env.config dev",
+    "dev": "webpack-dev-server -d --hot --inline --env.dev --env.config dev --host 0.0.0.0",
     "build": "rimraf dist && webpack -p --env.config prod"
   },
   "author": "xiaobin_wu",
