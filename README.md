@@ -1,5 +1,17 @@
 # 简单vue项目脚手架
 
+<p>
+    <a href="LICENSE">
+        <img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="Software License" />
+    </a>
+    <a href="https://github.com/xiaobinwu/my-vue-scaffold/issues">
+        <img src="https://img.shields.io/github/issues/xiaobinwu/my-vue-scaffold.svg" alt="Issues" />
+    </a>
+    <a href="http://standardjs.com/">
+        <img src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg" alt="JavaScript Style Guide" />
+    </a>
+</p>
+
 ## [github地址](https://github.com/xiaobinwu/my-vue-scaffold)
 
 ## 使用技术栈

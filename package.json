@@ -9,7 +9,7 @@
     "build": "rimraf dist && webpack -p --env.config prod"
   },
   "author": "xiaobin_wu",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^7.1.1",
     "babel-core": "^6.24.1",
