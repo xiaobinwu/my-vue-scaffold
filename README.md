@@ -408,3 +408,5 @@ $ lt --port 8080
 your url is: https://uhhzexcifv.localtunnel.me
 ```
 这样的话，可以把我们的本地网站暂时性地暴露到公网，可以对网站做一些线上线下对比，详细内容可以去了解一下localtunnel，这里讲的是通过上面配置，访问`https://uhhzexcifv.localtunnel.me`，没有达到理想效果，出现了`Invalid Host header`的错误,因为devServer缺少一个配置`disableHostCheck: true`,这样的一个配置，很多文档上面都没有说明，字面上面的意思`不要去检查Host`，这样设置，便可以绕过这一层检验，设置的配置项在[optionsSchema.json](https://github.com/webpack/webpack-dev-server/blob/master/lib/optionsSchema.json)中，issue可以看[这里](https://github.com/webpack/webpack-dev-server/issues/883)
+### 10. 升级webpack3.0
+webpack3.0完美向下兼容，添加了些新特性，如范围提升，魔法注释 ”Magic Comments（暂时不知道怎么用），升级过程遇到`Uncaught TypeError: Cannot read property 'call' of undefined`的错误，最后在HtmlWebpackPlugin插件配置了`chunksSortMode: 'dependency'`解决了。

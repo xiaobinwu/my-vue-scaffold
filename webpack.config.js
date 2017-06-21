@@ -17,7 +17,9 @@ module.exports = (options = {}) => {
         entryHtmlList.push(new HtmlWebpackPlugin({
             template: path.replace('.js', '.html'),
             filename: 'modules/' + chunkName + '.html',
-            chunks: ['manifest', 'vendor', chunkName]
+            chunks: ['manifest', 'vendor', chunkName],
+            // 允许控制块在添加到页面之前的排序方式
+            chunksSortMode: 'dependency'
         }))
     }
     // 处理开发环境和生产环境ExtractTextPlugin的使用情况
@@ -117,6 +119,7 @@ module.exports = (options = {}) => {
                 filename: 'static/css/[name].[chunkhash].css',
                 allChunks: true
             }),
+            // TODO
             // 抽离公共代码
             // 使用manifest可以把待更新的chunk和chunkname从vendor中提取出来，这样保证vendor不会频繁更新（更新的话，chunkname会发生变化，就会重新加载）
             new webpack.optimize.CommonsChunkPlugin({
@@ -128,8 +131,9 @@ module.exports = (options = {}) => {
                 'process.env': {
                     NODE_ENV: options.dev ? JSON.stringify('development') : JSON.stringify('production')
                 }
-            })
-
+            }),
+            // 启用范围提升（webpack3）
+            new webpack.optimize.ModuleConcatenationPlugin()
         ],
 
         resolve: {
