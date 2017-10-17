@@ -1,8 +1,16 @@
 const { resolve } = require('path')
 const webpack = require('webpack')
+const values = require('object.values')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+// 引入骨架屏
+// https://xiaoiver.github.io/coding/2017/07/30/%E4%B8%BAvue%E9%A1%B9%E7%9B%AE%E6%B7%BB%E5%8A%A0%E9%AA%A8%E6%9E%B6%E5%B1%8F.html
+const SkeletonWebpackPlugin = require('vue-skeleton-webpack-plugin')
 const glob = require('glob')
+
+if (!Object.values) {
+	values.shim();
+}
 
 module.exports = (options = {}) => {
     // 配置文件，根据 run script不同的config参数来调用不同config
@@ -109,11 +117,26 @@ module.exports = (options = {}) => {
                         }
                     ]
                 }
-            ]
+            ].concat(options.dev ? SkeletonWebpackPlugin.loader({
+                include: Object.values(entryJsList),
+                options: {
+                    entry: Object.keys(entryJsList),
+                    routePathTemplate: '/[name]-skeleton',
+                    insertAfter: 'routes = [',
+                    importTemplate: 'import [name] from \'~/skeleton/[name]/skeleton.vue\';'
+                }
+            }) : [])
         },
 
         plugins: [
             ...entryHtmlList,
+
+            // 生成骨架屏
+            new SkeletonWebpackPlugin({
+                webpackConfig: require('./webpack.skeleton.conf'),
+                insertAfter: '<div id="wrap">'
+            }),
+
             // 抽离css
             new ExtractTextPlugin({
                 filename: 'static/css/[name].[chunkhash].css',
@@ -184,6 +207,7 @@ module.exports = (options = {}) => {
                 minimize: true
             })
         ])
+
     }
 
     return webpackObj

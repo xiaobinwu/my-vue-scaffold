@@ -5,6 +5,7 @@
 
 const { resolve } = require('path')
 const nodeExternals = require('webpack-node-externals')
+const ExtractTextPlugin = require("extract-text-webpack-plugin")
 const glob = require('glob')
 const entryJsList = {}
 const entries = glob.sync('./src/skeleton/*/entry-skeleton.js')
@@ -19,8 +20,6 @@ module.exports = {
     entry: entryJsList,
     output: {
         path: resolve(__dirname, 'dist'),
-        filename: 'static/js/[name].js',
-        chunkFilename: 'static/js/[id].[chunkhash].js', // 这样异步加载的chunk可以被提取出来，比如（src/router/foo.js）懒加载路由
         libraryTarget: 'commonjs2'
     },
     resolve: {
@@ -32,7 +31,7 @@ module.exports = {
             // Vue 最早会打包生成三个文件，一个是 runtime only 的文件 vue.common.js，一个是 compiler only 的文件 compiler.js，一个是 runtime + compiler 的文件 vue.js。
             // vue.js = vue.common.js + compiler.js，默认package.json的main是指向vue.common.js，而template 属性的使用一定要用compiler.js，因此需要在alias改变vue指向
             // $ => 为了能够精准匹配vue
-            vue$: 'vue/dist/vue'
+            vue$: 'vue/dist/vue.esm.js'
         },
         // 指定import从哪个目录开始查找
         modules: [
@@ -65,7 +64,10 @@ module.exports = {
                 loader: 'vue-loader',
                 options: {
                     loaders: {
-                        sass: cssLoaders('vue-style-loader!css-loader!sass-loader', { extract: true })
+                        sass: ExtractTextPlugin.extract({
+                            use: 'css-loader!sass-loader',
+                            fallback: 'vue-style-loader'
+                        })
                     }
                 }
             }
