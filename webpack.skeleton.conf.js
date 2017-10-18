@@ -23,7 +23,6 @@ module.exports = {
     output: {
         path: resolve(__dirname, 'dist'),
         filename: 'static/js/[name].js',
-        chunkFilename: 'static/js/[id].[chunkhash].js', 
         libraryTarget: 'commonjs2'
     },
     resolve: {
