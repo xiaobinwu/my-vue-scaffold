@@ -36,6 +36,17 @@ module.exports = {
     module: {
         rules: [
             {
+                enforce: 'pre',
+                test: /.vue$/,
+                loader: 'eslint-loader',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: ['babel-loader', 'eslint-loader']
+            },
+            {
                 test: /\.vue$/,
                 loader: 'vue-loader',
                 options: {
@@ -46,11 +57,6 @@ module.exports = {
                         })
                     }
                 }
-            },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: ['babel-loader']
             }
         ]
     },
