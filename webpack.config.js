@@ -13,6 +13,7 @@ if (!Object.values) {
 }
 
 module.exports = (options = {}) => {
+
     // 配置文件，根据 run script不同的config参数来调用不同config
     const config = require('./config/' + (process.env.npm_config_config || options.config || 'dev'))
     // 遍历入口文件，这里入口文件与模板文件名字保持一致，保证能同时合成HtmlWebpackPlugin数组和入口文件数组
@@ -30,6 +31,7 @@ module.exports = (options = {}) => {
             chunksSortMode: 'dependency'
         }))
     }
+
     // 处理开发环境和生产环境ExtractTextPlugin的使用情况
     function cssLoaders(loader, opt) {
         const loaders = loader.split('!')
@@ -117,25 +119,21 @@ module.exports = (options = {}) => {
                         }
                     ]
                 }
-            ].concat(options.dev ? SkeletonWebpackPlugin.loader({
-                include: Object.values(entryJsList),
-                options: {
-                    entry: Object.keys(entryJsList),
-                    routePathTemplate: '/[name]-skeleton',
-                    insertAfter: 'routes = [',
-                    importTemplate: 'import [name] from \'~/skeleton/[name]/skeleton.vue\';'
-                }
-            }) : [])
+            ]
+            // .concat(options.dev ? [SkeletonWebpackPlugin.loader({
+            //     include: Object.keys(entryJsList).map((item) => { return resolve(__dirname, `./src/router/${item}.js`) }),
+            //     options: {
+            //         entry: Object.keys(entryJsList),
+            //         routePathTemplate: '/[name]-skeleton',
+            //         insertAfter: 'routes = [',
+            //         // 需要改变vue-skeleton-webpack-plugin插件loader.js中importTemplate的插入位置，应该是在source的head位置
+            //         importTemplate: 'import [nameCap] from \'~/skeleton/[name]/skeleton.vue\''
+            //     }
+            // })] : [])
         },
 
         plugins: [
             ...entryHtmlList,
-
-            // 生成骨架屏
-            new SkeletonWebpackPlugin({
-                webpackConfig: require('./webpack.skeleton.conf'),
-                insertAfter: '<div id="wrap">'
-            }),
 
             // 抽离css
             new ExtractTextPlugin({
@@ -205,6 +203,11 @@ module.exports = (options = {}) => {
             //  压缩 loaders
             new webpack.LoaderOptionsPlugin({
                 minimize: true
+            }),
+            // 生成骨架屏
+            new SkeletonWebpackPlugin({
+                webpackConfig: require('./webpack.skeleton.conf'),
+                insertAfter: '<div id="wrap">'
             })
         ])
 
