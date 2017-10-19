@@ -218,6 +218,8 @@ module.exports = (options = {}) => {
 ```
 ## 上面的代码对于每个配置项都有注释说明，这里有几点需要注意的：
 
+#### 开发环境路径：`http://localhost:3000/modules/foo.html`
+
 ### 1. webpack.config.js导出的是一个function
 之前[项目](https://github.com/xiaobinwu/Wuji)的webpack.config.js是以对象形式export的，如下
 ```javascript
@@ -411,5 +413,5 @@ your url is: https://uhhzexcifv.localtunnel.me
 ### 10. 升级webpack3.0
 webpack3.0完美向下兼容，添加了些新特性，如范围提升，魔法注释 ”Magic Comments（暂时不知道怎么用），升级过程遇到`Uncaught TypeError: Cannot read property 'call' of undefined`的错误，最后在HtmlWebpackPlugin插件配置了`chunksSortMode: 'dependency'`解决了。
 
-### 8. 骨架屏的使用
+### 11. 骨架屏的使用
 参考[为vue项目添加骨架屏](https://xiaoiver.github.io/coding/2017/07/30/%E4%B8%BAvue%E9%A1%B9%E7%9B%AE%E6%B7%BB%E5%8A%A0%E9%AA%A8%E6%9E%B6%E5%B1%8F.html),所使用插件`vue-skeleton-webpack-plugin`，插件本身似乎存在着一些问题，如果是eslint规范代码，但是插件生成的代码不满足自己定义的eslint规范，会产生错误，同时，在`'import [nameCap] from \'~/skeleton/[name]/skeleton.vue\''`中插入到`source`尾部，会报错！
