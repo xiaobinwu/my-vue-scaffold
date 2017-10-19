@@ -13,7 +13,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="sass" scoped>
 .skeleton-header {
     height: 52px;
     background: blue;
