@@ -4,7 +4,6 @@ const values = require('object.values')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 // 引入骨架屏
-// https://xiaoiver.github.io/coding/2017/07/30/%E4%B8%BAvue%E9%A1%B9%E7%9B%AE%E6%B7%BB%E5%8A%A0%E9%AA%A8%E6%9E%B6%E5%B1%8F.html
 const SkeletonWebpackPlugin = require('vue-skeleton-webpack-plugin')
 const glob = require('glob')
 
